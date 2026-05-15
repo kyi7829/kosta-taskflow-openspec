@@ -82,8 +82,8 @@
 
 ## 10. Vercel 배포
 
-- [ ] 10.0 Vercel CLI 설치: `npm i -g vercel` + `vercel login`
+- [x] 10.0 Vercel CLI 설치: `npm i -g vercel` + `vercel login`
 - [x] 10.1 `vercel.json`: API routes (`/api/*` → FastAPI, runtime: python3.12), 정적 파일 설정
-- [ ] 10.2 Vercel 프로젝트 생성 (`vercel link`) + `DATABASE_URL`, `CORS_ORIGINS`, `JWT_SECRET` 환경변수 등록 (Neon)
-- [ ] 10.3 Build Command에 `tailwindcss` CLI 빌드 + `alembic upgrade head` 포함
-- [ ] 10.4 배포 후 전체 기능 5종 동작 확인 (회원가입→팀→칸반→채팅)
+- [x] 10.2 Vercel 프로젝트 생성 (`vercel link`) + `DATABASE_URL`, `CORS_ORIGINS`, `JWT_SECRET` 환경변수 등록 (Neon)
+- [x] 10.3 Build Command에 `tailwindcss` CLI 빌드 + `alembic upgrade head` 포함
+- [x] 10.4 배포 후 전체 기능 5종 동작 확인 (회원가입→팀→칸반→채팅)

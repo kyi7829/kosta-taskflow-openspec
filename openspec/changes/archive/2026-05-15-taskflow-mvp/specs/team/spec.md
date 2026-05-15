@@ -86,6 +86,7 @@ Owner는 다른 팀 멤버에게 소유권을 이전할 수 있어야 한다.
 #### Scenario: 멤버 탈퇴
 - **WHEN** member가 DELETE /teams/{id}/leave 호출
 - **THEN** HTTP 204, users.team_id = NULL 업데이트
+- **THEN** 해당 멤버가 담당(assignee_id)인 팀 내 모든 tasks의 assignee_id = NULL로 자동 정리
 
 #### Scenario: Owner가 탈퇴 시도
 - **WHEN** owner가 DELETE /teams/{id}/leave 호출

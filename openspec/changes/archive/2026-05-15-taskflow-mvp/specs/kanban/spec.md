@@ -1,5 +1,14 @@
 ## ADDED Requirements
 
+### Requirement: 팀 접근 불가 시 자동 리다이렉트
+칸반 화면 진입 시 팀 정보 조회가 403 또는 404를 반환하면(팀 삭제 또는 강제 탈퇴), 클라이언트는 사용자의 team_id를 null로 초기화하고 팀 선택 화면으로 자동 이동해야 한다.
+
+#### Scenario: 팀 삭제 후 팀원 접근
+- **WHEN** 팀장이 팀을 삭제한 후, 팀원이 칸반 화면을 새로고침
+- **THEN** GET /teams/{id} 응답이 403 FORBIDDEN
+- **THEN** 클라이언트는 localStorage의 team_id = null 처리
+- **THEN** /team-select.html 로 자동 이동
+
 ### Requirement: 태스크 목록 조회 및 필터
 시스템은 팀의 태스크를 컬럼별로 반환하며 assignee 기반 필터를 지원해야 한다.
 - 기본 정렬: `tasks.created_at DESC`
