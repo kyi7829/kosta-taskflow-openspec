@@ -1,14 +1,5 @@
-/**
- * config.js — Environment configuration
- *
- * For local development with FastAPI running on port 8000,
- * include this script BEFORE api.js and uncomment the line below:
- */
-
-// Detect if running locally (not deployed to Vercel)
+// 로컬 개발: API가 8000, 프론트가 5500이므로 절대 URL 사용
+// 운영(Vercel): 같은 도메인의 /api 경로 사용
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-  // When serving frontend with live-server on port 5500, API calls go through
-  // You may need to set this if FastAPI is on a different port:
-  // window.API_BASE_URL = 'http://localhost:8000';
-  // If FastAPI is proxied at /api via reverse proxy, leave this commented out.
+  window.API_BASE_URL = 'http://localhost:8000';
 }

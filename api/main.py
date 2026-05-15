@@ -1,8 +1,9 @@
 import os
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from dotenv import load_dotenv
 
@@ -80,12 +81,19 @@ async def generic_exception_handler(request: Request, exc: Exception):
 
 # ── Routers ────────────────────────────────────────────────────────────────────
 
-app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(teams.router, prefix="/teams", tags=["teams"])
-app.include_router(tasks.router, tags=["tasks"])
-app.include_router(messages.router, tags=["messages"])
+app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
+app.include_router(teams.router, prefix="/api/teams", tags=["teams"])
+app.include_router(tasks.router, prefix="/api", tags=["tasks"])
+app.include_router(messages.router, prefix="/api", tags=["messages"])
 
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+# ── Static Files (로컬 개발용) ─────────────────────────────────────────────────
+# frontend/ 폴더를 루트(/)에서 서빙 — http://localhost:8000 으로 접근
+_frontend_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
+if os.path.isdir(_frontend_dir):
+    app.mount("/", StaticFiles(directory=_frontend_dir, html=True), name="frontend")
