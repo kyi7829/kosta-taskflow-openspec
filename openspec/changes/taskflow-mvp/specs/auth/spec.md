@@ -60,6 +60,10 @@ JWT에서 사용자 정보를 조회하여 반환해야 한다.
 - **THEN** HTTP 200, `{ id, email, team_id }` 반환
 
 #### Scenario: JWT 만료
-- **WHEN** 만료된 JWT로 API 호출
+- **WHEN** 유효한 형식이지만 만료된 JWT로 API 호출
 - **THEN** HTTP 401, `{ error: { code: "TOKEN_EXPIRED", message: "인증이 만료되었습니다" } }` 반환
 - **THEN** 클라이언트는 localStorage 토큰 삭제 후 /login으로 redirect
+
+#### Scenario: JWT 없음 (미인증)
+- **WHEN** Authorization 헤더 없이 인증 필요 API 호출
+- **THEN** HTTP 401, `{ error: { code: "UNAUTHORIZED", message: "로그인이 필요합니다" } }` 반환

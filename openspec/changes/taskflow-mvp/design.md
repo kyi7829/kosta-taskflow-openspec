@@ -63,6 +63,32 @@ JWT 블랙리스트 없음. 클라이언트가 localStorage 토큰 삭제. 서�
 - 운영 배포: `tailwindcss` CLI로 purge된 CSS 빌드 → Vercel 정적 파일 포함
 - **이유**: 로컬 개발 속도 vs 운영 성능 균형
 
+### 11. 순환 FK 해결 — use_alter=True (이슈 #1)
+`users.team_id → teams` + `teams.owner_id → users` 상호 참조로 Alembic이 CREATE TABLE 순서를 결정하지 못함.
+해결: `teams.owner_id` FK를 `use_alter=True`로 선언 → Alembic이 ALTER TABLE로 후처리.
+```python
+owner_id = Column(Integer, ForeignKey('users.id', use_alter=True, name='fk_teams_owner_id'))
+```
+CREATE 순서: `users` (team_id 없이) → `teams` (owner_id ALTER) → `users.team_id` FK 추가.
+
+### 12. users.team_joined_at 컬럼 추가 (이슈 #2)
+`GET /teams/{id}/members` 응답의 `joined_at` 필드를 위해 `users.team_joined_at TIMESTAMP NULL` 컬럼 추가.
+- 팀 생성 시: `team_joined_at = now()`
+- 초대코드 합류 시: `team_joined_at = now()`
+- 팀 탈퇴 시: `team_joined_at = NULL`
+- `users.created_at` 재활용은 계정 생성 시각과 혼동되므로 사용하지 않음.
+
+### 13. CORS 정책 (이슈 #5)
+환경변수 `CORS_ORIGINS`로 허용 도메인을 관리.
+- 로컬 개발: `http://localhost:5500,http://127.0.0.1:5500,http://localhost:8000`
+- 운영: Vercel 배포 후 실제 도메인 추가 (예: `https://kosta-taskflow.vercel.app`)
+- `.env.example`에 `CORS_ORIGINS=http://localhost:5500` 기본값 포함.
+
+### 14. 에러 코드 구분 — UNAUTHORIZED vs TOKEN_EXPIRED (이슈 #7)
+- JWT **없음** (Authorization 헤더 미포함): `401 UNAUTHORIZED`
+- JWT **만료** (exp 초과): `401 TOKEN_EXPIRED`
+- 클라이언트 interceptor는 두 코드 모두 localStorage 삭제 + /login redirect로 처리.
+
 ### 10. 에러 응답 표준
 모든 4xx/5xx: `{ "error": { "code": "SCREAMING_SNAKE", "message": "한국어" } }`
 클라이언트는 `error.code`로 분기, `error.message`를 토스트에 그대로 표시.
@@ -83,5 +109,5 @@ JWT 블랙리스트 없음. 클라이언트가 localStorage 토큰 삭제. 서�
 
 ## Open Questions
 
-- Vercel Serverless Functions Python 런타임 버전 확인 필요 (3.12 권장)
-- Neon Free 플랜 연결 수 제한 → `NullPool` 또는 Neon serverless driver 검토
+- ~~Vercel Serverless Functions Python 런타임 버전~~ → **Python 3.12** 사용 (`vercel.json`에 `"runtime": "python3.12"` 명시)
+- ~~Neon Free 플랜 연결 수 제한~~ → **NullPool** 사용 (`create_engine(..., poolclass=NullPool)`). Serverless 환경에서 연결을 요청마다 생성/해제하여 연결 풀 고갈 방지.

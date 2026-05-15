@@ -61,6 +61,64 @@
 - **WHEN** 다른 팀 소속 사용자가 GET /teams/{id}/* 호출
 - **THEN** HTTP 403, `{ error: { code: "FORBIDDEN", message: "이 팀의 멤버가 아닙니다" } }` 반환
 
+### Requirement: 팀장 위임
+Owner는 다른 팀 멤버에게 소유권을 이전할 수 있어야 한다.
+- Owner만 호출 가능, 대상은 같은 팀 멤버여야 함
+- 위임 성공 시 호출자는 member로 강등, 대상자가 owner가 됨
+- `teams.owner_id` 업데이트
+
+#### Scenario: 정상 위임
+- **WHEN** owner가 같은 팀 멤버 id로 PATCH /teams/{id}/transfer-owner `{ new_owner_id }` 호출
+- **THEN** HTTP 200, `{ id, name, owner_id: <new_owner_id> }` 반환
+
+#### Scenario: 비owner 위임 시도
+- **WHEN** member가 PATCH /teams/{id}/transfer-owner 호출
+- **THEN** HTTP 403, `{ error: { code: "FORBIDDEN" } }` 반환
+
+#### Scenario: 다른 팀 멤버에게 위임 시도
+- **WHEN** new_owner_id가 같은 팀 소속이 아닌 경우
+- **THEN** HTTP 400, `{ error: { code: "NOT_TEAM_MEMBER" } }` 반환
+
+### Requirement: 팀 탈퇴 (일반 멤버)
+일반 멤버는 팀을 탈퇴할 수 있어야 한다. Owner는 이 엔드포인트로 탈퇴 불가.
+- 탈퇴 성공 시 `users.team_id = NULL`, `users.team_joined_at = NULL`
+
+#### Scenario: 멤버 탈퇴
+- **WHEN** member가 DELETE /teams/{id}/leave 호출
+- **THEN** HTTP 204, users.team_id = NULL 업데이트
+
+#### Scenario: Owner가 탈퇴 시도
+- **WHEN** owner가 DELETE /teams/{id}/leave 호출
+- **THEN** HTTP 403, `{ error: { code: "OWNER_MUST_TRANSFER", message: "팀장은 위임 또는 팀 삭제 후 탈퇴할 수 있습니다" } }` 반환
+
+### Requirement: 팀 삭제 (Owner 전용)
+Owner는 팀 전체를 삭제할 수 있어야 한다. 삭제 전 클라이언트에서 confirm 다이얼로그를 표시한다.
+- 팀 삭제 시 연관 tasks, messages, 멤버 team_id 모두 CASCADE 처리
+- Owner만 호출 가능
+
+#### Scenario: 팀 삭제 성공
+- **WHEN** owner가 DELETE /teams/{id} 호출
+- **THEN** HTTP 204, teams·tasks·messages 삭제, 모든 멤버 `team_id = NULL`
+
+#### Scenario: 비owner 팀 삭제 시도
+- **WHEN** member가 DELETE /teams/{id} 호출
+- **THEN** HTTP 403, `{ error: { code: "FORBIDDEN" } }` 반환
+
+### Requirement: Owner 탈퇴 UI 흐름
+Owner가 탈퇴를 시도할 때 클라이언트는 반드시 confirm 다이얼로그를 표시해야 한다.
+
+#### Scenario: Owner 탈퇴 UI 분기
+- **WHEN** owner가 '로그아웃' 외 '팀 떠나기' 버튼 클릭
+- **THEN** 다이얼로그 표시: "팀장은 바로 탈퇴할 수 없습니다. 팀원에게 팀장을 위임하거나 팀을 삭제하세요." + [팀장 위임] [팀 삭제] 버튼
+
+#### Scenario: 팀장 위임 후 탈퇴
+- **WHEN** owner가 [팀장 위임] 선택 → 멤버 선택 → PATCH /teams/{id}/transfer-owner 성공 후 DELETE /teams/{id}/leave 호출
+- **THEN** HTTP 204, 탈퇴 완료 → 팀 선택 화면으로 redirect
+
+#### Scenario: 팀 삭제 후 탈퇴
+- **WHEN** owner가 [팀 삭제] 선택 → 2차 confirm → DELETE /teams/{id} 호출
+- **THEN** HTTP 204, 팀 삭제 완료 → 팀 선택 화면으로 redirect
+
 ### Requirement: 권한 모델
 시스템은 owner와 member를 구분하고 역할별 권한을 강제해야 한다.
 - owner: 팀 생성자, tasks DELETE 오버라이드 가능 (타인 카드도 삭제)
