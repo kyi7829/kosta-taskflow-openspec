@@ -92,7 +92,7 @@ function renderBoard() {
 function getMemberEmail(userId) {
   if (!userId) return null;
   const m = members.find(m => m.id === userId);
-  return m ? m.email.split('@')[0] : `#${userId}`;
+  return m ? m.email.split('@')[0] : null;
 }
 
 function createTaskCard(task) {
@@ -101,9 +101,12 @@ function createTaskCard(task) {
   card.dataset.taskId = task.id;
   card.draggable = true;
 
-  const assigneeLabel = task.assignee_id
-    ? `<span class="text-xs text-indigo-600 font-medium">@${getMemberEmail(task.assignee_id)}</span>`
-    : `<span class="text-xs text-gray-400">미할당</span>`;
+  const memberEmail = task.assignee_id ? getMemberEmail(task.assignee_id) : null;
+  const assigneeLabel = memberEmail
+    ? `<span class="text-xs text-indigo-600 font-medium">@${memberEmail}</span>`
+    : task.assignee_id
+      ? `<span class="text-xs text-amber-500 font-medium">(탈퇴한 멤버)</span>`
+      : `<span class="text-xs text-gray-400">미할당</span>`;
 
   card.innerHTML = `
     <p class="text-sm font-medium text-gray-800 mb-2 leading-snug">${escapeHtml(task.title)}</p>

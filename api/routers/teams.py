@@ -181,6 +181,12 @@ def leave_team(
             },
         )
 
+    # 탈퇴하는 유저가 담당한 태스크의 assignee_id를 NULL로 정리
+    db.query(models.Task).filter(
+        models.Task.team_id == team_id,
+        models.Task.assignee_id == current_user.id,
+    ).update({"assignee_id": None})
+
     current_user.team_id = None
     current_user.team_joined_at = None
     db.commit()
