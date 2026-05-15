@@ -1,0 +1,12 @@
+{
+  "name": "taskflow",
+  "version": "1.0.0",
+  "description": "TaskFlow MVP — Kanban + Chat for small teams",
+  "scripts": {
+    "build:css": "tailwindcss -i ./frontend/css/input.css -o ./frontend/css/dist/output.css --minify",
+    "watch:css": "tailwindcss -i ./frontend/css/input.css -o ./frontend/css/dist/output.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
+  }
+}
