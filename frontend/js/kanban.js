@@ -78,10 +78,9 @@ function renderBoard() {
     const col = document.getElementById(`col-${status}`);
     if (!col) return;
     const tasksForCol = allTasks.filter(t => t.status === status);
-    const taskList = col.querySelector('.task-list');
-    taskList.innerHTML = '';
+    col.innerHTML = '';
     tasksForCol.forEach(task => {
-      taskList.appendChild(createTaskCard(task));
+      col.appendChild(createTaskCard(task));
     });
 
     // Update count
