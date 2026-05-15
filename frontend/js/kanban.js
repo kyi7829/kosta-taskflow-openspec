@@ -46,6 +46,13 @@ async function loadTeamInfo() {
     document.getElementById('teamName').textContent = teamInfo.name;
     document.getElementById('inviteCodeDisplay').textContent = teamInfo.invite_code;
   } catch (err) {
+    if (err.status === 403 || err.status === 404) {
+      // 팀이 삭제됐거나 강제 탈퇴된 경우 → team_id 초기화 후 팀 선택으로 이동
+      const u = auth.getUser();
+      if (u) { u.team_id = null; auth.setAuth(auth.getToken(), u); }
+      window.location.href = '/team-select.html';
+      return;
+    }
     showError(err.message);
   }
 }
