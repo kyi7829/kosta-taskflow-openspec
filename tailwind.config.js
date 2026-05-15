@@ -4,6 +4,7 @@ module.exports = {
     "./frontend/**/*.html",
     "./frontend/**/*.js",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       screens: {

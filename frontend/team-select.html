@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TaskFlow — 팀 선택</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' }</script>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100 flex items-center justify-center p-4">
+<body class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+
+  <!-- Dark mode toggle (fixed) -->
+  <button class="dark-toggle-btn fixed top-4 right-4 z-50 p-2 rounded-lg bg-white dark:bg-gray-800 shadow-md hover:shadow-lg text-lg transition-all" title="다크모드 전환">🌙</button>
 
   <div class="w-full max-w-lg">
     <div class="text-center mb-8">
       <h1 class="text-4xl font-bold text-indigo-700">TaskFlow</h1>
-      <p class="text-gray-500 mt-2">팀을 선택하거나 새로 만드세요</p>
+      <p class="text-gray-500 dark:text-gray-400 mt-2">팀을 선택하거나 새로 만드세요</p>
     </div>
 
     <div class="grid md:grid-cols-2 gap-4">
       <!-- Create Team Card -->
-      <div class="bg-white rounded-2xl shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">팀 만들기</h2>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+        <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">팀 만들기</h2>
         <form id="createForm" class="space-y-3">
           <input
             type="text"
@@ -25,7 +30,7 @@
             maxlength="30"
             placeholder="팀 이름 (최대 30자)"
             required
-            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+            class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100"
           />
           <button
             type="submit"
@@ -39,8 +44,8 @@
       </div>
 
       <!-- Join Team Card -->
-      <div class="bg-white rounded-2xl shadow-lg p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">초대코드로 합류</h2>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+        <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">초대코드로 합류</h2>
         <form id="joinForm" class="space-y-3">
           <input
             type="text"
@@ -48,7 +53,7 @@
             maxlength="9"
             placeholder="ABCD-1234"
             required
-            class="w-full border border-gray-300 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-mono tracking-widest uppercase"
+            class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-mono tracking-widest uppercase bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100"
           />
           <button
             type="submit"
@@ -64,18 +69,18 @@
 
     <!-- Logout -->
     <div class="text-center mt-6">
-      <button id="logoutBtn" class="text-sm text-gray-500 hover:text-gray-700 underline">로그아웃</button>
+      <button id="logoutBtn" class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 underline">로그아웃</button>
     </div>
   </div>
 
   <!-- Invite Code Display Modal -->
   <div id="inviteModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm text-center">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 w-full max-w-sm text-center">
       <div class="text-5xl mb-4">🎉</div>
-      <h3 class="text-2xl font-bold text-gray-800 mb-2">팀이 생성됐어요!</h3>
-      <p class="text-gray-500 mb-4 text-sm">아래 초대코드를 팀원에게 공유하세요</p>
-      <div class="bg-indigo-50 rounded-xl py-4 px-6 mb-6">
-        <p class="text-3xl font-mono font-bold text-indigo-700 tracking-widest" id="displayCode"></p>
+      <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">팀이 생성됐어요!</h3>
+      <p class="text-gray-500 dark:text-gray-400 mb-4 text-sm">아래 초대코드를 팀원에게 공유하세요</p>
+      <div class="bg-indigo-50 dark:bg-indigo-900/30 rounded-xl py-4 px-6 mb-6">
+        <p class="text-3xl font-mono font-bold text-indigo-700 dark:text-indigo-300 tracking-widest" id="displayCode"></p>
       </div>
       <button
         id="copyCodeBtn"
@@ -85,7 +90,7 @@
       </button>
       <button
         id="goKanbanBtn"
-        class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2.5 rounded-lg transition-colors duration-200"
+        class="w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 font-semibold py-2.5 rounded-lg transition-colors duration-200"
       >
         칸반 보드로 이동
       </button>
@@ -214,6 +219,13 @@
       } catch {}
       auth.clearAuth();
       window.location.href = '/index.html';
+    });
+  </script>
+  <script type="module">
+    import { initDarkMode, toggleDarkMode } from './js/darkmode.js';
+    initDarkMode();
+    document.querySelectorAll('.dark-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', toggleDarkMode);
     });
   </script>
 </body>

@@ -104,22 +104,22 @@ function getMemberEmail(userId) {
 
 function createTaskCard(task) {
   const card = document.createElement('div');
-  card.className = 'task-card bg-white rounded-lg p-3 shadow-sm border border-gray-200 cursor-grab hover:shadow-md transition-shadow mb-2';
+  card.className = 'task-card bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm border border-gray-200 dark:border-gray-700 cursor-grab hover:shadow-md transition-shadow mb-2';
   card.dataset.taskId = task.id;
   card.draggable = true;
 
   const memberEmail = task.assignee_id ? getMemberEmail(task.assignee_id) : null;
   const assigneeLabel = memberEmail
-    ? `<span class="text-xs text-indigo-600 font-medium">@${memberEmail}</span>`
+    ? `<span class="text-xs text-indigo-600 dark:text-indigo-400 font-medium">@${memberEmail}</span>`
     : task.assignee_id
       ? `<span class="text-xs text-amber-500 font-medium">(탈퇴한 멤버)</span>`
-      : `<span class="text-xs text-gray-400">미할당</span>`;
+      : `<span class="text-xs text-gray-400 dark:text-gray-500">미할당</span>`;
 
   card.innerHTML = `
-    <p class="text-sm font-medium text-gray-800 mb-2 leading-snug">${escapeHtml(task.title)}</p>
+    <p class="text-sm font-medium text-gray-800 dark:text-gray-100 mb-2 leading-snug">${escapeHtml(task.title)}</p>
     <div class="flex items-center justify-between">
       ${assigneeLabel}
-      <button class="delete-task-btn text-gray-300 hover:text-red-500 text-xs transition-colors" data-task-id="${task.id}" title="삭제">✕</button>
+      <button class="delete-task-btn text-gray-300 dark:text-gray-500 hover:text-red-500 text-xs transition-colors" data-task-id="${task.id}" title="삭제">✕</button>
     </div>
   `;
 
@@ -299,9 +299,9 @@ function setupFilterButtons() {
       currentFilter = btn.dataset.filter;
       btns.forEach(b => {
         b.classList.remove('bg-indigo-600', 'text-white');
-        b.classList.add('bg-gray-100', 'text-gray-700');
+        b.classList.add('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
       });
-      btn.classList.remove('bg-gray-100', 'text-gray-700');
+      btn.classList.remove('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
       btn.classList.add('bg-indigo-600', 'text-white');
       await loadTasks();
     });
@@ -324,17 +324,17 @@ function showAddTaskForm(status) {
   document.querySelectorAll('.add-task-form').forEach(f => f.remove());
 
   const form = document.createElement('div');
-  form.className = 'add-task-form bg-white rounded-lg p-3 shadow-sm border-2 border-indigo-300 mb-2';
+  form.className = 'add-task-form bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm border-2 border-indigo-300 dark:border-indigo-600 mb-2';
   form.innerHTML = `
     <textarea
-      class="w-full text-sm border-none outline-none resize-none text-gray-800 placeholder-gray-400"
+      class="w-full text-sm border-none outline-none resize-none text-gray-800 dark:text-gray-100 bg-transparent placeholder-gray-400 dark:placeholder-gray-500"
       placeholder="태스크 제목 입력..."
       rows="2"
       maxlength="100"
     ></textarea>
     <div class="flex gap-2 mt-2">
       <button class="confirm-add-btn bg-indigo-600 text-white text-xs py-1 px-3 rounded hover:bg-indigo-700">추가</button>
-      <button class="cancel-add-btn text-gray-500 text-xs py-1 px-3 rounded hover:bg-gray-100">취소</button>
+      <button class="cancel-add-btn text-gray-500 dark:text-gray-400 text-xs py-1 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700">취소</button>
     </div>
   `;
 
@@ -380,14 +380,14 @@ function renderMembersPanel() {
     const div = document.createElement('div');
     div.className = 'flex items-center gap-2 py-1.5';
     div.innerHTML = `
-      <div class="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-700">
+      <div class="w-7 h-7 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-xs font-bold text-indigo-700 dark:text-indigo-300">
         ${m.email[0].toUpperCase()}
       </div>
       <div class="flex-1 min-w-0">
-        <p class="text-sm font-medium text-gray-800 truncate">
+        <p class="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
           ${m.role === 'owner' ? '★ ' : ''}${escapeHtml(m.email.split('@')[0])}
         </p>
-        <p class="text-xs text-gray-400 truncate">${escapeHtml(m.email)}</p>
+        <p class="text-xs text-gray-400 dark:text-gray-500 truncate">${escapeHtml(m.email)}</p>
       </div>
     `;
     panel.appendChild(div);
@@ -435,7 +435,7 @@ function renderMobileTabIndicator() {
   indicator.innerHTML = STATUSES.map((status, idx) => `
     <button
       class="px-3 py-1 text-sm rounded-full font-medium transition-colors
-        ${idx === mobileColumnIndex ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600'}"
+        ${idx === mobileColumnIndex ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}"
       data-idx="${idx}"
     >
       ${STATUS_LABELS[status]}

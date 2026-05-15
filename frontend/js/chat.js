@@ -92,7 +92,7 @@ function appendMessage(msg) {
     wrapper.innerHTML = `
       <div class="flex flex-col items-end gap-1 max-w-[70%]">
         <div class="flex items-center gap-2">
-          <span class="text-xs text-gray-400">${time}</span>
+          <span class="text-xs text-gray-400 dark:text-gray-500">${time}</span>
           <button class="delete-msg-btn text-gray-300 hover:text-red-500 text-xs transition-colors" data-msg-id="${msg.id}" title="삭제">✕</button>
         </div>
         <div class="bg-indigo-600 text-white px-4 py-2.5 rounded-2xl rounded-tr-sm text-sm leading-relaxed break-words">
@@ -102,15 +102,15 @@ function appendMessage(msg) {
     `;
   } else {
     wrapper.innerHTML = `
-      <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-600 shrink-0 self-end">
+      <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-sm font-bold text-gray-600 dark:text-gray-200 shrink-0 self-end">
         ${senderInitial}
       </div>
       <div class="flex flex-col gap-1 max-w-[70%]">
-        <span class="text-xs text-gray-500 ml-1">${escapeHtml(msg.user_email || '알 수 없음')}</span>
-        <div class="bg-white border border-gray-200 px-4 py-2.5 rounded-2xl rounded-tl-sm text-sm text-gray-800 leading-relaxed break-words shadow-sm">
+        <span class="text-xs text-gray-500 dark:text-gray-400 ml-1">${escapeHtml(msg.user_email || '알 수 없음')}</span>
+        <div class="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 px-4 py-2.5 rounded-2xl rounded-tl-sm text-sm text-gray-800 dark:text-gray-100 leading-relaxed break-words shadow-sm">
           ${escapeHtml(msg.content)}
         </div>
-        <span class="text-xs text-gray-400 ml-1">${time}</span>
+        <span class="text-xs text-gray-400 dark:text-gray-500 ml-1">${time}</span>
       </div>
     `;
   }

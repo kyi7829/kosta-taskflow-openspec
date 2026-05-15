@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TaskFlow — 채팅</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' }</script>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 dark:bg-gray-900">
 
   <!-- Full height chat container -->
-  <div id="chatContainer" class="flex flex-col h-screen max-w-3xl mx-auto bg-white shadow-sm">
+  <div id="chatContainer" class="flex flex-col h-screen max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-sm">
 
     <!-- Header -->
-    <header class="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3 shrink-0 sticky top-0 z-10">
+    <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center gap-3 shrink-0 sticky top-0 z-10">
       <!-- Hamburger -->
-      <button id="hamburgerBtn" class="md:hidden p-1.5 rounded-lg hover:bg-gray-100 text-gray-600">
+      <button id="hamburgerBtn" class="md:hidden p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
@@ -24,13 +26,17 @@
         ← 칸반
       </a>
       <div class="flex-1">
-        <h1 class="font-bold text-gray-800" id="chatTeamName">팀 채팅</h1>
+        <h1 class="font-bold text-gray-800 dark:text-gray-100" id="chatTeamName">팀 채팅</h1>
         <div class="flex items-center gap-1.5">
           <span class="w-2 h-2 bg-green-400 rounded-full"></span>
-          <span class="text-xs text-gray-500" id="memberCount">0명</span>
+          <span class="text-xs text-gray-500 dark:text-gray-400" id="memberCount">0명</span>
         </div>
       </div>
-      <button id="membersToggleBtn" class="hidden md:block text-sm text-gray-500 hover:text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-100">
+
+      <!-- Dark mode toggle -->
+      <button class="dark-toggle-btn p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-lg transition-colors" title="다크모드 전환">🌙</button>
+
+      <button id="membersToggleBtn" class="hidden md:block text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
         멤버
       </button>
     </header>
@@ -47,12 +53,12 @@
         >
           <!-- Messages rendered here by JS -->
           <div class="flex items-center justify-center py-8">
-            <p class="text-gray-400 text-sm">메시지를 불러오는 중...</p>
+            <p class="text-gray-400 dark:text-gray-500 text-sm">메시지를 불러오는 중...</p>
           </div>
         </div>
 
         <!-- Input area -->
-        <div class="border-t border-gray-200 px-4 py-3 bg-white shrink-0">
+        <div class="border-t border-gray-200 dark:border-gray-700 px-4 py-3 bg-white dark:bg-gray-800 shrink-0">
           <form id="sendForm" class="flex flex-col gap-1">
             <div class="flex gap-2 items-end">
               <input
@@ -60,7 +66,7 @@
                 id="messageInput"
                 maxlength="1000"
                 placeholder="메시지 입력... (Enter로 전송)"
-                class="flex-1 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                class="flex-1 border border-gray-300 dark:border-gray-600 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100"
                 autocomplete="off"
               />
               <button
@@ -73,18 +79,18 @@
               </button>
             </div>
             <div class="flex justify-end">
-              <span id="charCounter" class="text-xs text-gray-400">0/1000</span>
+              <span id="charCounter" class="text-xs text-gray-400 dark:text-gray-500">0/1000</span>
             </div>
           </form>
         </div>
       </div>
 
       <!-- Members sidebar (desktop) -->
-      <aside id="membersSidebar" class="hidden w-48 border-l border-gray-200 p-4 shrink-0 overflow-y-auto">
-        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">팀원</p>
+      <aside id="membersSidebar" class="hidden w-48 border-l border-gray-200 dark:border-gray-700 p-4 shrink-0 overflow-y-auto bg-white dark:bg-gray-800">
+        <p class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">팀원</p>
         <div id="chatMembersPanel" class="space-y-2"></div>
-        <div class="mt-4 pt-4 border-t border-gray-100 space-y-2">
-          <button id="logoutBtn" class="w-full text-left text-sm text-gray-500 hover:text-gray-800 py-1 rounded hover:bg-gray-50">로그아웃</button>
+        <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 space-y-2">
+          <button id="logoutBtn" class="w-full text-left text-sm text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-700">로그아웃</button>
         </div>
       </aside>
     </div>
@@ -93,15 +99,15 @@
   <!-- Mobile sidebar overlay -->
   <div id="mobileSidebar" class="fixed inset-0 z-50 hidden">
     <div id="sidebarBackdrop" class="absolute inset-0 bg-black/40"></div>
-    <div class="absolute right-0 top-0 h-full w-64 bg-white shadow-xl p-5 flex flex-col">
+    <div class="absolute right-0 top-0 h-full w-64 bg-white dark:bg-gray-800 shadow-xl p-5 flex flex-col">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="font-bold text-gray-800">팀원</h2>
-        <button id="closeSidebarBtn" class="text-gray-400 hover:text-gray-600">✕</button>
+        <h2 class="font-bold text-gray-800 dark:text-gray-100">팀원</h2>
+        <button id="closeSidebarBtn" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">✕</button>
       </div>
       <div id="chatMembersMobile" class="space-y-2 flex-1"></div>
-      <div class="mt-4 pt-4 border-t border-gray-100 space-y-2">
+      <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 space-y-2">
         <a href="/kanban.html" class="block text-sm text-indigo-600 font-medium py-1.5">칸반 보드</a>
-        <button id="logoutBtnMobile" class="w-full text-left text-sm text-gray-500 py-1.5">로그아웃</button>
+        <button id="logoutBtnMobile" class="w-full text-left text-sm text-gray-500 dark:text-gray-400 py-1.5">로그아웃</button>
       </div>
     </div>
   </div>
@@ -135,14 +141,14 @@
           const div = document.createElement('div');
           div.className = 'flex items-center gap-2';
           div.innerHTML = `
-            <div class="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-700 shrink-0">
+            <div class="w-7 h-7 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-xs font-bold text-indigo-700 dark:text-indigo-300 shrink-0">
               ${m.email[0].toUpperCase()}
             </div>
             <div class="min-w-0">
-              <p class="text-sm font-medium text-gray-800 truncate">
+              <p class="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
                 ${m.role === 'owner' ? '★ ' : ''}${m.email.split('@')[0]}
               </p>
-              <p class="text-xs text-gray-400 truncate">${m.email}</p>
+              <p class="text-xs text-gray-400 dark:text-gray-500 truncate">${m.email}</p>
             </div>
           `;
           return div;
@@ -194,6 +200,13 @@
 
     // Clean up on page leave
     window.addEventListener('beforeunload', stopPolling);
+  </script>
+  <script type="module">
+    import { initDarkMode, toggleDarkMode } from './js/darkmode.js';
+    initDarkMode();
+    document.querySelectorAll('.dark-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', toggleDarkMode);
+    });
   </script>
 </body>
 </html>
